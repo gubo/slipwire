@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">SLIPWIRE</string>
+
+    <string name="action_search">SEARCH</string>
+    <string name="action_books">BOOKS</string>
+
+    <string name="weather">\u0020\u0020WEATHER\u0020\u0020</string>
+    <string name="wiki">\u0020\u0020WIKI\u0020\u0020</string>
+
+    <string name="ellipsis">...</string>
 </resources>

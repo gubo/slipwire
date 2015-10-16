@@ -105,14 +105,13 @@ public class VOLLEY
     private RequestQueue requestqueue;
     private ImageLoader imageloader;
 
-    public static final VOLLEY getInstance( final Context context ) throws IllegalArgumentException {
+    public static final void startup( final Context context ) throws IllegalArgumentException {
         Util.assertMainThread();
         DBG.m( "VOLLEY.instantiated" );
         if ( instance == null ) {
             instance = new VOLLEY();
             instance.initialize( context );
         }
-        return instance;
     }
 
     public static final VOLLEY getInstance() throws IllegalArgumentException {
@@ -160,11 +159,13 @@ public class VOLLEY
     /**
      *
      */
-    public void shutdown() {
+    public static void shutdown() {
         Util.assertMainThread();
-        requestqueue.stop();
-        instance = null;
-        DBG.m( "VOLLEY.shutdown" );
+        if ( instance != null ) {
+            instance.requestqueue.stop();
+            instance = null;
+            DBG.m( "VOLLEY.shutdown" );
+        }
     }
 
     /*

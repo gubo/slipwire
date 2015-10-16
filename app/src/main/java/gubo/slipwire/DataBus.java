@@ -9,32 +9,32 @@ import rx.subjects.*;
 /**
  *
  */
-public class EventBus
+public class DataBus
 {
     /*
      * @see https://github.com/kaushikgopal/RxJava-Android-Samples
      * @see http://nerds.weddingpartyapp.com/tech/2014/12/24/implementing-an-event-bus-with-rxjava-rxbus/
      */
 
-    private final Subject<Event,Event> subject = PublishSubject.create();
-    private final SerializedSubject<Event,Event> serializedsubject = new SerializedSubject( subject );
+    private final Subject<Data,Data> subject = PublishSubject.create();
+    private final SerializedSubject<Data,Data> serializedsubject = new SerializedSubject( subject );
 
     @Inject
-    public EventBus() {}
+    public DataBus() {}
 
     /**
      *
-     * @param event
+     * @param data
      */
-    public void send( final Event event ) {
-        serializedsubject.onNext( event );
+    public void send( final Data data ) {
+        serializedsubject.onNext( data );
     }
 
     /**
      *
      * @return
      */
-    public Observable<Event> toObserverable() {
+    public Observable<Data> toObserverable() {
         return serializedsubject;
     }
 }
