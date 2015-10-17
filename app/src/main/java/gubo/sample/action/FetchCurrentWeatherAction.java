@@ -108,6 +108,8 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
 
         final Gson gson = new GsonBuilder().create();
 
+        eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,true ) );
+
         final Observer<FetchCurrentWeatherAction.Response> observer = new Observer<FetchCurrentWeatherAction.Response>() {
             @Override public void onNext( final FetchCurrentWeatherAction.Response response ) {
                 final CurrentWeatherData currentweatherdata = new CurrentWeatherData( origin );
@@ -125,11 +127,13 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
             }
             @Override public void onCompleted() {
                 compositesubscription.unsubscribe();
+                eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,false ) );
                 databus.send( new EOD( origin ) );
             }
             @Override public void onError( Throwable x ) {
                 DBG.m( x );
                 compositesubscription.unsubscribe();
+                eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,false ) );
                 databus.send( new EOD( origin ) );
             }
         };
@@ -154,6 +158,7 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
 
     @Override
     public void cancel() {
+        eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,false ) );
         compositesubscription.unsubscribe();
         DBG.m( "FetchCurrentWeatherAction.cancel" );
     }
