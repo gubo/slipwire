@@ -9,31 +9,32 @@ import javax.inject.*;
 import gubo.slipwire.*;
 
 /*
- * - has a SampleManager
- * - bind/unbind the SampleManager
- * - retain instance to persist over SampleActivity lifecycle
+ * - has a HomeManager
+ * - bind/unbind the HomeManager
+ * - retain instance to persist over HomeActivity lifecycle
  */
-public class SampleFragment extends Fragment
+public class HomeFragment extends Fragment
 {
     /*
      * Dagger cant inject private fields
      */
-    @Inject SampleManager isamplemanager;
+    @Inject
+    HomeManager ihomemanager;
 
-    private SampleManager samplemanager;
+    private HomeManager homemanager;
 
     @Override
     public void onCreate( final Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
 
-        DBG.m( "SampleFragment.onCreate" );
+        DBG.m( "HomeFragment.onCreate" );
 
         final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
         samplecomponent.inject( this );
-        samplemanager = isamplemanager;
-        isamplemanager = null;
+        homemanager = ihomemanager;
+        ihomemanager = null;
 
-        samplemanager.manage();
+        homemanager.manage();
 
         setRetainInstance( true );
     }
@@ -42,26 +43,26 @@ public class SampleFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        DBG.m( "SampleFragment.onResume" );
+        DBG.m( "HomeFragment.onResume" );
 
-        samplemanager.bind( getActivity() );
+        homemanager.bind( getActivity() );
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        samplemanager.unbind();
+        homemanager.unbind();
 
-        DBG.m( "SampleFragment.onPause" );
+        DBG.m( "HomeFragment.onPause" );
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        samplemanager.unmanage();
+        homemanager.unmanage();
 
-        DBG.m( "SampleFragment.onDestroy" );
+        DBG.m( "HomeFragment.onDestroy" );
     }
 }

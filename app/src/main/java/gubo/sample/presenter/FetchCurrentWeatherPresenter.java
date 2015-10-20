@@ -38,10 +38,8 @@ public class FetchCurrentWeatherPresenter implements Presenter,DataSource
     private boolean currentlyactive;
 
     @Inject // TODO ?
-    public FetchCurrentWeatherPresenter( final EventBus eventbus, final DataBus databus ) throws IllegalArgumentException {
+    public FetchCurrentWeatherPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
-
-        DBG.m( "FetchCurrentWeatherPresenter" );
 
         this.eventbus = eventbus;
         this.databus = databus;
@@ -87,7 +85,7 @@ public class FetchCurrentWeatherPresenter implements Presenter,DataSource
             display.release();
         }
 
-        DBG.m( "FetchCurrentWeatherPresenter.release" );
+        DBG.v( "FetchCurrentWeatherPresenter.release" );
     }
 
     @Override public Data getDataFor( final int position ) { return currentweatherdata; }

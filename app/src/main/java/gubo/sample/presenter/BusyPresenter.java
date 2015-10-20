@@ -31,8 +31,6 @@ public class BusyPresenter implements Presenter
             throw new IllegalArgumentException();
         }
 
-        DBG.m( "BusyPresenter" );
-
         this.eventbus = eventbus;
 
         final Action1<Event> DA1 = new Action1<Event>() {
@@ -66,7 +64,7 @@ public class BusyPresenter implements Presenter
             eventsubscription = null;
         }
 
-        DBG.m( "BusyPresenter.release" );
+        DBG.v( "BusyPresenter.release" );
     }
 
     private void refresh() {

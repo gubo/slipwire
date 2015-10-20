@@ -31,8 +31,6 @@ public class CurrentWeatherPresenter implements Presenter,DataSource
     public CurrentWeatherPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
-        DBG.m( "CurrentWeatherPresenter" );
-
         this.eventbus = eventbus;
         this.databus = databus;
 
@@ -69,7 +67,7 @@ public class CurrentWeatherPresenter implements Presenter,DataSource
             display.release();
         }
 
-        DBG.m( "CurrentWeatherPresenter.release" );
+        DBG.v( "CurrentWeatherPresenter.release" );
 
     }
 

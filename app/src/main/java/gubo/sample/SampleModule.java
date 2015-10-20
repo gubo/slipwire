@@ -29,7 +29,7 @@ class SampleModule
     /*
      * will be called to satisfy field/constructor injection
      */
-    @Provides Manageable provideManageable( final SampleManager manageable ) {
+    @Provides Manageable provideManageable( final HomeManager manageable ) {
         DBG.m( "SampleModule.provideManageable" );
         return manageable;
     }

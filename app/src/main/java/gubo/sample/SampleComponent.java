@@ -9,6 +9,9 @@ import dagger.*;
 @Component( modules = SampleModule.class )
 interface SampleComponent
 {
-    void inject( SampleActivity sampleactivity );
-    void inject( SampleFragment samplefragment );
+    void inject( HomeActivity homeactivity );
+    void inject( HomeFragment homefragment );
+
+    void inject( BooksActivity booksactivity );
+    void inject( BooksFragment booksfragment );
 }

@@ -13,6 +13,16 @@ add volley official repo as a module:
     git submodule foreach git pull
 
 
+
+GIT:
+
+if android studio loses git association:
+VCS -> Enable version Control Integration -> Git
+TERMINAL:
+git remote add slipwire https://github.com/gubo/slipwire.git
+
+
+
 MISC LINKS:
 
 http://developer.android.com/training/volley/index.html

@@ -29,11 +29,7 @@ public class PendingPresenter implements Presenter
     static class Unknown {}
 
     public PendingPresenter( final EventBus eventbus ) throws IllegalArgumentException {
-        if ( eventbus == null ) {
-            throw new IllegalArgumentException();
-        }
-
-        DBG.m( "PendingPresenter" );
+        if ( eventbus == null ) { throw new IllegalArgumentException(); }
 
         this.eventbus = eventbus;
 
@@ -75,7 +71,7 @@ public class PendingPresenter implements Presenter
             eventsubscription = null;
         }
 
-        DBG.m( "PendingPresenter.release" );
+        DBG.v( "PendingPresenter.release" );
     }
 
     private void refresh() {

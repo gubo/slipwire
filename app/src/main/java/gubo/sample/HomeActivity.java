@@ -14,12 +14,12 @@ import gubo.sample.event.*;
 
 /*
  * - has a EventBus
- * - inflate sample layout
- * - create SampleFragment
+ * - inflate home layout
+ * - create HomeFragment
  * - customize ActionBar
  * - send Events for item selections
  */
-public class SampleActivity extends AppCompatActivity
+public class HomeActivity extends AppCompatActivity
 {
     /*
      * Dagger cant inject private fields
@@ -27,25 +27,30 @@ public class SampleActivity extends AppCompatActivity
     @Inject EventBus ieventbus;
 
     private EventBus eventbus;
+    private boolean launched;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
+    protected void onCreate( final Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
 
-        DBG.m( "SampleActivity.onCreate" );
+        DBG.m( "HomeActivity.onCreate" );
+
+        final String startedby = getIntent().getStringExtra( "startedby" );
+        launched =  ( LaunchActivity.class.getName().equals( startedby ) );
+        getIntent().putExtra( "startedby",( String)null );
 
         final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
         samplecomponent.inject( this );
         eventbus = ieventbus;
         ieventbus = null;
 
-        setContentView( R.layout.sample );
+        setContentView( R.layout.home );
 
         final FragmentManager fragmentmanager = getFragmentManager();
-        Fragment fragment = fragmentmanager.findFragmentByTag( SampleFragment.class.getName() );
+        Fragment fragment = fragmentmanager.findFragmentByTag( HomeFragment.class.getName() );
         if ( fragment == null ) {
-            fragment = new SampleFragment();
-            fragmentmanager.beginTransaction().add( fragment,SampleFragment.class.getName() ).commit();
+            fragment = new HomeFragment();
+            fragmentmanager.beginTransaction().add( fragment,HomeFragment.class.getName() ).commit();
         }
 
         final ActionBar actionbar = getSupportActionBar();
@@ -64,18 +69,19 @@ public class SampleActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected( final MenuItem item ) {
-        boolean handled = super.onOptionsItemSelected( item );
+        boolean handled = false;
 
         switch ( item.getItemId() ) {
         case R.id.action_search:
-            eventbus.send( new gubo.sample.event.SearchEvent( SampleActivity.class ) );
+            eventbus.send( new gubo.sample.event.SearchEvent( HomeActivity.class ) );
             handled = true;
             break;
         case R.id.action_books:
-            eventbus.send( new gubo.sample.event.BooksEvent( SampleActivity.class ) );
+            eventbus.send( new gubo.sample.event.BooksEvent( HomeActivity.class,this ) );
             handled = true;
             break;
         default:
+            handled = super.onOptionsItemSelected( item );
             break;
         }
 
@@ -86,24 +92,24 @@ public class SampleActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        DBG.m( "SampleActivity.onResume" );
+        DBG.m( "HomeActivity.onResume" );
 
         STARTBUSY: {
             final Runnable action = new Runnable() {
                 @Override public void run() {
-                    eventbus.send( new BusyEvent( SampleActivity.class,true ) );
+                    eventbus.send( new BusyEvent( HomeActivity.class,true ) );
                 }
             };
-            getWindow().getDecorView().postDelayed( action,25L );
+            if ( launched ) { getWindow().getDecorView().postDelayed( action,25L ); }
         }
 
         FREE: {
             final Runnable action = new Runnable() {
                 @Override public void run() {
-                    eventbus.send( new BusyEvent( SampleActivity.class,false ) );
+                    eventbus.send( new BusyEvent( HomeActivity.class,false ) );
                 }
             };
-            getWindow().getDecorView().postDelayed( action,1000L );
+            if ( launched ) { getWindow().getDecorView().postDelayed( action,1500L ); }
         }
     }
 
@@ -111,13 +117,13 @@ public class SampleActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        DBG.m( "SampleActivity.onPause" );
+        DBG.m( "HomeActivity.onPause" );
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        DBG.m( "SampleActivity.onDestroy" );
+        DBG.m( "HomeActivity.onDestroy" );
     }
 }

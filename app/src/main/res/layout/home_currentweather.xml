@@ -1,6 +1,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sample_randomwiki"
+    android:id="@+id/home_currentweather"
     android:background="@drawable/content"
     android:layout_margin="15dp"
     android:orientation="vertical"
@@ -9,13 +9,13 @@
 
     <LinearLayout
         android:background="#00000000"
-        android:id="@+id/sample_randomwiki_info"
+        android:id="@+id/home_currentweather_status"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <com.android.volley.toolbox.NetworkImageView
             android:background="#00000000"
-            android:id="@+id/sample_randomwiki_info_icon"
+            android:id="@+id/home_currentweather_status_icon"
             android:layout_marginRight="10dp"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -27,8 +27,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/sample_randomwiki_info_title"
+                android:id="@+id/home_currentweather_status_heading"
                 android:textSize="24dp"
+                android:textColor="#FFFFFFFF"
+                android:textStyle="bold"
+                android:background="#00000000"
+                android:text="@string/ellipsis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </TextView>
+            <TextView
+                android:id="@+id/home_currentweather_status_temperature"
+                android:textSize="20dp"
                 android:textColor="#FFFFFFFF"
                 android:textStyle="bold"
                 android:background="#00000000"

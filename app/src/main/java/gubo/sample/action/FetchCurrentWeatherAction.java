@@ -50,8 +50,8 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
     static class Main
     {
         float temp;
-        int pressure;
-        int humidity;
+        float pressure;
+        float humidity;
         float temp_min;
         float temp_max;
     }
@@ -100,6 +100,8 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
                     if ( origin == FetchCurrentWeatherAction.this.getOrigin() ) {
                         cancel();
                     }
+                } else if ( event instanceof CancelAllEvent ) {
+                    cancel();
                 }
             }
         };
@@ -116,8 +118,8 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
                 try {
                     currentweatherdata.id = response.weather[ 0 ].id;
                     currentweatherdata.temp = response.main.temp;
-                    currentweatherdata.humidity = response.main.humidity;
-                    currentweatherdata.pressure = response.main.pressure;
+                    currentweatherdata.humidity = ( int)response.main.humidity;
+                    currentweatherdata.pressure = ( int)response.main.pressure;
                     currentweatherdata.heading = response.weather[ 0 ].main;
                     currentweatherdata.iconurl = ICON + response.weather[ 0 ].icon + ".png";
                 } catch ( Exception x ) {
@@ -159,6 +161,7 @@ public class FetchCurrentWeatherAction extends gubo.slipwire.Action
     @Override
     public void cancel() {
         eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,false ) );
+        databus.send( new EOD( origin ) );
         compositesubscription.unsubscribe();
         DBG.m( "FetchCurrentWeatherAction.cancel" );
     }

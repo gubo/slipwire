@@ -1,7 +1,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="left|center_vertical"
-    android:id="@+id/sample_menubar"
+    android:id="@+id/home_menubar"
     android:orientation="horizontal"
     android:background="#22FFFFFF"
     android:padding="5dp"
@@ -10,7 +10,7 @@
 
     <Button
         android:background="@drawable/button"
-        android:id="@+id/sample_menubar_fetch_currentweather"
+        android:id="@+id/home_menubar_fetch_currentweather"
         android:text="@string/weather"
         android:textStyle="bold"
         android:drawableLeft="@drawable/ic_blank"
@@ -21,7 +21,7 @@
 
     <Button
         android:background="@drawable/button"
-        android:id="@+id/sample_menubar_fetch_randomwiki"
+        android:id="@+id/home_menubar_fetch_randomwiki"
         android:text="@string/wiki"
         android:textStyle="bold"
         android:layout_marginLeft="15dp"

@@ -42,12 +42,12 @@ public class RandomWikiAdapter implements RandomWikiPresenter.Display,DataSink
             return;
         }
         try {
-            final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.sample_randomwiki_info_icon );
+            final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.home_randomwiki_info_icon );
             if ( randomwikidata.thumbnailurl != null ) {
                 iconnetworkimageview.setImageUrl( randomwikidata.thumbnailurl,VOLLEY.getInstance().getImageLoader() );
             }
 
-            final TextView headingtextview = ( TextView )view.findViewById( R.id.sample_randomwiki_info_title );
+            final TextView headingtextview = ( TextView )view.findViewById( R.id.home_randomwiki_info_title );
             headingtextview.setText( ( "" + randomwikidata.title ).toUpperCase() );
         } catch ( Exception x ) {
             DBG.m( x );

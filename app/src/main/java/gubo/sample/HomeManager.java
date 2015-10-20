@@ -14,14 +14,10 @@ import gubo.sample.action.*;
 import gubo.sample.presenter.*;
 
 /*
- * - has a EventBus
- * - has a DataBus
- * - subscribe to EventBus
- * - subscribe to DataBus
- * - manage/bind Presenters
+ * - bind/release Presenters
  * - event mediator: invoke action based on event
  */
-class SampleManager implements Manageable
+class HomeManager implements Manageable
 {
     private final EventBus eventbus;
     private final DataBus databus;
@@ -30,13 +26,15 @@ class SampleManager implements Manageable
 
     private BusyPresenter busypresenter;
     private PendingPresenter pendingpresenter;
+    private CancelAllPresenter cancelallpresenter;
+    private NetworkActivityPresenter networkactivitypresenter;
     private FetchCurrentWeatherPresenter fetchcurrentweatherpresenter;
     private FetchRandomWikiPresenter fetchrandomwikipresenter;
     private CurrentWeatherPresenter currentweatherpresenter;
     private RandomWikiPresenter randomwikipresenter;
 
     @Inject
-    SampleManager( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
+    HomeManager( final EventBus eventbus, final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
         this.eventbus = eventbus;
@@ -45,7 +43,7 @@ class SampleManager implements Manageable
 
     @Override
     public void manage() {
-        DBG.m( "SampleManager.manage" );
+        DBG.m( "HomeManager.manage" );
 
         final Action1<Event> EA1 = new Action1<Event>() {
             @Override public void call( final Event event ) { onEvent( event ); }
@@ -57,6 +55,8 @@ class SampleManager implements Manageable
          */
         busypresenter = new BusyPresenter( eventbus );
         pendingpresenter = new PendingPresenter( eventbus );
+        cancelallpresenter = new CancelAllPresenter( eventbus );
+        networkactivitypresenter = new NetworkActivityPresenter( eventbus );
         fetchcurrentweatherpresenter = new FetchCurrentWeatherPresenter( eventbus,databus );
         fetchrandomwikipresenter = new FetchRandomWikiPresenter( eventbus,databus );
         currentweatherpresenter = new CurrentWeatherPresenter( eventbus,databus );
@@ -65,19 +65,16 @@ class SampleManager implements Manageable
 
     @Override
     public void bind( final android.app.Activity activity ) {
-        DBG.m( "SampleManager.bind" );
+        DBG.m( "HomeManager.bind" );
 
-        busypresenter.bind( new BusyAdapter( activity.findViewById( R.id.sample_busy ) ) );
-        pendingpresenter.bind( new PendingAdapter( activity.findViewById( R.id.sample_pending ) ) );
-        fetchcurrentweatherpresenter.bind( new FetchCurrentWeatherAdapter( fetchcurrentweatherpresenter,activity.findViewById( R.id.sample_menubar_fetch_currentweather ) ) );
-        fetchrandomwikipresenter.bind( new FetchRandomWikiAdapter( fetchrandomwikipresenter, activity.findViewById( R.id.sample_menubar_fetch_randomwiki ) ) );
-        currentweatherpresenter.bind( new CurrentWeatherAdapter( currentweatherpresenter,activity.findViewById( R.id.sample_currentweather ) ) );
-        randomwikipresenter.bind( new RandomWikiAdapter( randomwikipresenter,activity.findViewById( R.id.sample_randomwiki ) ) );
-    }
-
-    private void onEvent( final Event event ) {
-        if ( event instanceof FetchCurrentWeatherEvent ) { new FetchCurrentWeatherAction( event.getOrigin(),eventbus,databus ).invoke(); }
-        if ( event instanceof FetchRandomWikiEvent ) { new FetchRandomWikiAction( event.getOrigin(),eventbus,databus ).invoke(); }
+        busypresenter.bind( new BusyAdapter( activity.findViewById( R.id.home_busy ) ) );
+        pendingpresenter.bind( new PendingAdapter( activity.findViewById( R.id.home_statusbar_pending ) ) );
+        cancelallpresenter.bind( new CancelAllAdapter( activity.findViewById( R.id.home_statusbar_cancel_all ) ) );
+        networkactivitypresenter.bind( new NetworkActivityAdapter( activity.findViewById( R.id.home_statusbar_network_activity ) ) );
+        fetchcurrentweatherpresenter.bind( new FetchCurrentWeatherAdapter( fetchcurrentweatherpresenter,activity.findViewById( R.id.home_menubar_fetch_currentweather ) ) );
+        fetchrandomwikipresenter.bind( new FetchRandomWikiAdapter( fetchrandomwikipresenter, activity.findViewById( R.id.home_menubar_fetch_randomwiki ) ) );
+        currentweatherpresenter.bind( new CurrentWeatherAdapter( currentweatherpresenter,activity.findViewById( R.id.home_currentweather ) ) );
+        randomwikipresenter.bind( new RandomWikiAdapter( randomwikipresenter, activity.findViewById( R.id.home_randomwiki ) ) );
     }
 
     @Override
@@ -86,10 +83,12 @@ class SampleManager implements Manageable
         currentweatherpresenter.bind( null );
         fetchrandomwikipresenter.bind( null );
         fetchcurrentweatherpresenter.bind( null );
+        networkactivitypresenter.bind( null );
+        cancelallpresenter.bind( null );
         pendingpresenter.bind( null );
         busypresenter.bind( null );
 
-        DBG.m( "SampleManager.unbind" );
+        DBG.m( "HomeManager.unbind" );
     }
 
     @Override
@@ -98,6 +97,8 @@ class SampleManager implements Manageable
         currentweatherpresenter.release();
         fetchrandomwikipresenter.release();
         fetchcurrentweatherpresenter.release();
+        networkactivitypresenter.release();
+        cancelallpresenter.release();
         pendingpresenter.release();
         busypresenter.release();
 
@@ -106,6 +107,16 @@ class SampleManager implements Manageable
             eventsubscription = null;
         }
 
-        DBG.m( "SampleManager.unmanage" );
+        DBG.m( "HomeManager.unmanage" );
+    }
+
+    private void onEvent( final Event event ) {
+        if ( event instanceof FetchCurrentWeatherEvent ) { new FetchCurrentWeatherAction( event.getOrigin(),eventbus,databus ).invoke(); }
+        if ( event instanceof FetchRandomWikiEvent ) { new FetchRandomWikiAction( event.getOrigin(),eventbus,databus ).invoke(); }
+
+        if ( event instanceof BooksEvent ) {
+            final BooksEvent booksevent = ( BooksEvent)event;
+            new BooksAction( event.getOrigin(),booksevent.activity ).invoke();
+        }
     }
 }

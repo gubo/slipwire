@@ -28,8 +28,6 @@ public class RandomWikiPresenter implements Presenter,DataSource
     public RandomWikiPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
-        DBG.m( "RandomWikiPresenter" );
-
         this.eventbus = eventbus;
         this.databus = databus;
 
@@ -71,7 +69,7 @@ public class RandomWikiPresenter implements Presenter,DataSource
             display.release();
         }
 
-        DBG.m( "RandomWikiPresenter.release" );
+        DBG.v( "RandomWikiPresenter.release" );
 
     }
 

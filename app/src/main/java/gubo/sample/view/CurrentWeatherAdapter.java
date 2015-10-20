@@ -42,15 +42,15 @@ public class CurrentWeatherAdapter implements CurrentWeatherPresenter.Display,Da
             return;
         }
         try {
-            final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.sample_currentweather_status_icon );
+            final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.home_currentweather_status_icon );
             if ( currentweatherdata.iconurl != null ) {
                 iconnetworkimageview.setImageUrl( currentweatherdata.iconurl, VOLLEY.getInstance().getImageLoader() );
             }
 
-            final TextView headingtextview = ( TextView )view.findViewById( R.id.sample_currentweather_status_heading );
+            final TextView headingtextview = ( TextView )view.findViewById( R.id.home_currentweather_status_heading );
             headingtextview.setText( ( "" + currentweatherdata.heading ).toUpperCase() );
 
-            final TextView temperaturetextview = ( TextView )view.findViewById( R.id.sample_currentweather_status_temperature );
+            final TextView temperaturetextview = ( TextView )view.findViewById( R.id.home_currentweather_status_temperature );
             temperaturetextview.setText( ( int)farenheit( currentweatherdata.temp ) + "\u00B0F    " + ( int)currentweatherdata.temp + "\u00B0C" );
         } catch ( Exception x ) {
             DBG.m( x );

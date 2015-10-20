@@ -37,8 +37,6 @@ public class FetchRandomWikiPresenter implements Presenter,DataSource
     public FetchRandomWikiPresenter( final EventBus eventbus, final DataBus databus ) {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
-        DBG.m( "FetchRandomWikiPresenter" );
-
         this.eventbus = eventbus;
         this.databus = databus;
 
@@ -83,7 +81,7 @@ public class FetchRandomWikiPresenter implements Presenter,DataSource
             display.release();
         }
 
-        DBG.m( "FetchRandomWikiPresenter.release" );
+        DBG.v( "FetchRandomWikiPresenter.release" );
     }
 
     @Override public Data getDataFor( final int position ) { return currentwikidata; }
@@ -104,8 +102,7 @@ public class FetchRandomWikiPresenter implements Presenter,DataSource
     private void onData( final Data data ) {
         if ( data instanceof RandomWikiData ) {
             currentwikidata = ( RandomWikiData)data;
-            display.setItemCount( 1 );
-            display.setPosition( 0 );
+            refresh();
         } else if ( data instanceof EOD ) {
             if ( data.getOrigin() == FetchRandomWikiPresenter.class ) {
                 eventbus.send( new PendingEvent( FetchRandomWikiPresenter.class,false ) );

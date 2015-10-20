@@ -75,6 +75,8 @@ public class FetchRandomWikiAction extends gubo.slipwire.Action
                     if ( origin == FetchRandomWikiAction.this.getOrigin() ) {
                         cancel();
                     }
+                } else if ( event instanceof CancelAllEvent ) {
+                    cancel();
                 }
             }
         };
@@ -83,7 +85,7 @@ public class FetchRandomWikiAction extends gubo.slipwire.Action
 
         final Gson gson = new GsonBuilder().create();
 
-        eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,true ) );
+        eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class, true ) );
 
         final Observer<FetchRandomWikiAction.Response> observer = new Observer<FetchRandomWikiAction.Response>() {
             @Override public void onNext( final FetchRandomWikiAction.Response response ) {
@@ -129,6 +131,7 @@ public class FetchRandomWikiAction extends gubo.slipwire.Action
     @Override
     public void cancel() {
         eventbus.send( new NetworkActivityEvent( FetchCurrentWeatherAction.class,false ) );
+        databus.send( new EOD( origin ) );
         compositesubscription.unsubscribe();
         DBG.m( "FetchRandomWikiAction.cancel" );
     }
