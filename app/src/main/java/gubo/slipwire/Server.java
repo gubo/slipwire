@@ -25,7 +25,8 @@ public class Server extends Service
         public Server getService() { return Server.this; }
     }
 
-    private static final int PORT = 55808;
+    private static final int DEFAULT_PORT   = 55808;
+    private static final int UNAVAILABLE    = -1;
 
     private final IBinder binder = new Server.Binder();
 
@@ -57,6 +58,10 @@ public class Server extends Service
     @Override
     public IBinder onBind( final Intent intent ) { return binder; }
 
+    /**
+     *
+     * @return
+     */
     public int getPort() { return port; }
 
     @Override
@@ -65,7 +70,7 @@ public class Server extends Service
         DBG.m( "Server.onDestroy" );
     }
 
-    void start() {
+    private void start() {
         try {
             port = Server.getAvailablePort();
             if ( httpd == null ) {
@@ -78,25 +83,23 @@ public class Server extends Service
         }
     }
 
-    private static final int UNAVAILABLE = -1;
-
     private static int getAvailablePort() {
         int _port = UNAVAILABLE;
 
-        SERVERPORT: {
+        DEFAULTPORT : {
             ServerSocket serversocket = null;
             try {
-                serversocket = new ServerSocket( Server.PORT );
+                serversocket = new ServerSocket( Server.DEFAULT_PORT );
                 _port = serversocket.getLocalPort();
             } catch ( IOException x ) {
                 _port = UNAVAILABLE;
-                DBG.w( "FAILED TO GET PORT:" + _port );
+                DBG.w( "FAILED TO GET DEFAULT_PORT:" + _port );
             } finally {
                 Util.close( serversocket );
             }
         }
 
-        ZERO: {
+        AVAILABLEPORT: {
             ServerSocket serversocket = null;
             try {
                 if ( _port == UNAVAILABLE ) {
@@ -104,7 +107,7 @@ public class Server extends Service
                     _port = serversocket.getLocalPort();
                 }
             } catch ( IOException x ) {
-                DBG.w( "FAILED TO GET PORT:" + _port );
+                DBG.w( "FAILED TO GET DEFAULT_PORT:" + _port );
             } finally {
                 Util.close( serversocket );
             }
@@ -113,7 +116,7 @@ public class Server extends Service
         return _port;
     }
 
-    void stop() {
+    private void stop() {
         try {
             if ( httpd != null ) {
                 DBG.m( "Server.stop" );

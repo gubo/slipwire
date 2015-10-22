@@ -34,6 +34,7 @@
             android:name="gubo.sample.BooksActivity">
         </activity>
 
+        <service android:name="gubo.slipwire.Server" android:exported="false"></service>
     </application>
 
 </manifest>

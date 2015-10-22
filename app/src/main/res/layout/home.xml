@@ -22,6 +22,7 @@
                 android:layout_height="match_parent">
                 <include layout="@layout/home_currentweather"/>
                 <include layout="@layout/home_randomwiki"/>
+                <include layout="@layout/home_randomlandsat"/>
             </LinearLayout>
         </HorizontalScrollView>
 

@@ -1,11 +1,15 @@
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
     android:gravity="left|center_vertical"
     android:id="@+id/home_menubar"
     android:orientation="horizontal"
     android:background="#22FFFFFF"
     android:padding="5dp"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <Button
@@ -31,4 +35,30 @@
         android:layout_height="wrap_content">
     </Button>
 
-</LinearLayout>
+    <Button
+        android:background="@drawable/button"
+        android:id="@+id/home_menubar_fetch_randomlandsat"
+        android:text="@string/landsat"
+        android:textStyle="bold"
+        android:layout_marginLeft="15dp"
+        android:drawableLeft="@drawable/ic_blank"
+        android:drawableRight="@drawable/ic_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </Button>
+
+    <Button
+        android:background="@drawable/button"
+        android:id="@+id/home_menubar_job_ping"
+        android:text="@string/ping"
+        android:textStyle="bold"
+        android:layout_marginLeft="15dp"
+        android:drawableLeft="@drawable/ic_blank"
+        android:drawableRight="@drawable/ic_play"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </Button>
+
+    </LinearLayout>
+</HorizontalScrollView>

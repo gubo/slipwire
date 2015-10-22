@@ -23,9 +23,10 @@ import fi.iki.elonen.*;
  */
 class HTTPD extends NanoHTTPD
 {
-    static class Response
+    static class Result
     {
-        public int ms;
+        public long ms;
+
         public Object resultant;
     }
 
@@ -47,12 +48,13 @@ class HTTPD extends NanoHTTPD
         final String uri = session.getUri();
         final Map<String,String> parameters = session.getParms();
 
-        final HTTPD.Response serverresponse = new HTTPD.Response();
+        final Result result = new Result();
+        result.ms = System.currentTimeMillis();
 
         JOBLET: {
             final Joblet joblet = jobletfactory.newJoblet( method.name(),uri,parameters );
             final java.io.Serializable resultant = joblet.perform();
-            serverresponse.resultant = resultant;
+            result.resultant = resultant;
         }
 
         DELAY: {
@@ -60,13 +62,15 @@ class HTTPD extends NanoHTTPD
             delay( _delay );
         }
 
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final String json = gson.toJson( serverresponse, HTTPD.Response.class );
+        result.ms = ( System.currentTimeMillis() - result.ms );
 
-        final NanoHTTPD.Response nanoresponse = new NanoHTTPD.Response( json );
-        nanoresponse.setMimeType( "application/json" );
-        nanoresponse.setStatus( NanoHTTPD.Response.Status.OK );
-        return nanoresponse;
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        final String json = gson.toJson( result, Result.class );
+
+        final NanoHTTPD.Response response = new NanoHTTPD.Response( json );
+        response.setMimeType( "application/json" );
+        response.setStatus( NanoHTTPD.Response.Status.OK );
+        return response;
     }
 
     private void delay( final String _delay ) {

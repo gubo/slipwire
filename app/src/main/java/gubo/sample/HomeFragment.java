@@ -1,10 +1,11 @@
 
 package gubo.sample;
 
+import javax.inject.*;
+
 import android.os.*;
 import android.app.*;
-
-import javax.inject.*;
+import android.content.*;
 
 import gubo.slipwire.*;
 
@@ -22,6 +23,7 @@ public class HomeFragment extends Fragment
     HomeManager ihomemanager;
 
     private HomeManager homemanager;
+    private Intent serverintent;
 
     @Override
     public void onCreate( final Bundle savedInstanceState ) {
@@ -34,6 +36,10 @@ public class HomeFragment extends Fragment
         homemanager = ihomemanager;
         ihomemanager = null;
 
+        serverintent = new Intent( getActivity(),gubo.slipwire.Server.class );
+        serverintent.putExtra( "JobletFactory", gubo.sample.joblet.JobletFactory.class.getName() );
+        getActivity().startService( serverintent );
+
         homemanager.manage();
 
         setRetainInstance( true );
@@ -45,7 +51,27 @@ public class HomeFragment extends Fragment
 
         DBG.m( "HomeFragment.onResume" );
 
-        homemanager.bind( getActivity() );
+        /*
+         * here we must first discover the local server port, then can bind homemanager
+         */
+        final Context context = getActivity();
+        final ServiceConnection connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected( final ComponentName name,final IBinder service ) {
+                final Server.Binder serverbinder = ( Server.Binder ) service;
+                final Server server = serverbinder.getService();
+                final int port = server.getPort();
+                DBG.m( "HomeFragment: port=" + port );
+                context.unbindService( this );
+                homemanager.setJobletPort( port );
+                homemanager.bind( getActivity() );
+            }
+            @Override
+            public void onServiceDisconnected( final ComponentName name ) {
+                context.unbindService( this );
+            }
+        };
+        context.bindService( serverintent,connection,0 );
     }
 
     @Override
@@ -62,6 +88,10 @@ public class HomeFragment extends Fragment
         super.onDestroy();
 
         homemanager.unmanage();
+        homemanager = null;
+
+        getActivity().stopService( serverintent );
+        serverintent = null;
 
         DBG.m( "HomeFragment.onDestroy" );
     }

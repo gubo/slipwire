@@ -12,33 +12,32 @@ import gubo.sample.data.*;
 import gubo.sample.event.*;
 
 /*
- * - send FetchCurrentWeatherEvent when fetch button_normal pressed
- * - update enabled landsat of fetch button_normal when receive data sourced by FetchCurrentWeatherEvent.class
+ *
  */
-public class FetchCurrentWeatherPresenter implements Presenter,DataSource
+public class JobPingPresenter implements Presenter,DataSource
 {
-    public interface FetchListener
+    public interface JobListener
     {
-        public void onFetch();
+        public void onJob();
     }
 
     public interface Display extends Presenter.Display,DataSink
     {
-        public void setActive( boolean enabled );
-        public void setFetchListener( FetchCurrentWeatherPresenter.FetchListener listener );
+        public void setJobListener( JobPingPresenter.JobListener listener );
+        public void setActive( boolean active );
         public void release();
     }
 
     private final EventBus eventbus;
     private final DataBus databus;
 
-    private FetchCurrentWeatherPresenter.Display display;
-    private CurrentWeatherData currentweatherdata;
+    private JobPingPresenter.Display display;
     private Subscription datasubscription;
+    private PingData currentpingdata;
     private boolean currentlyactive;
 
-    @Inject // TODO ?
-    public FetchCurrentWeatherPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
+    @Inject
+    public JobPingPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
         this.eventbus = eventbus;
@@ -54,20 +53,20 @@ public class FetchCurrentWeatherPresenter implements Presenter,DataSource
 
     @Override
     public <D extends Presenter.Display> void bind( final D display ) {
-        DBG.v( "FetchCurrentWeatherPresenter.bind " + display );
+        DBG.v( "JobPingPresenter.bind " + display );
 
         if ( this.display != null ) {
-            this.display.setFetchListener( null );
+            this.display.setJobListener( null );
             this.display.release();
         }
 
-        this.display = ( FetchCurrentWeatherPresenter.Display)display;
+        this.display = ( JobPingPresenter.Display)display;
 
         if ( this.display != null ) {
-            final FetchCurrentWeatherPresenter.FetchListener listener = new FetchCurrentWeatherPresenter.FetchListener() {
-                @Override public void onFetch() { FetchCurrentWeatherPresenter.this.onFetch(); }
+            final JobPingPresenter.JobListener listener = new JobPingPresenter.JobListener() {
+                @Override public void onJob() { JobPingPresenter.this.onJob(); }
             };
-            this.display.setFetchListener( listener );
+            this.display.setJobListener( listener );
         }
 
         refresh();
@@ -81,36 +80,36 @@ public class FetchCurrentWeatherPresenter implements Presenter,DataSource
         }
 
         if ( display != null ) {
-            display.setFetchListener( null );
+            display.setJobListener( null );
             display.release();
         }
 
-        DBG.v( "FetchCurrentWeatherPresenter.release" );
+        DBG.v( "JobPingPresenter.release" );
     }
 
-    @Override public Data getDataFor( final int position ) { return currentweatherdata; }
+    @Override public Data getDataFor( final int position ) { return currentpingdata; }
     @Override public void getReadyFor( final int position,final int count ) {}
 
-    private void onFetch() {
+    private void onJob() {
         if ( !currentlyactive ) {
-            eventbus.send( new PendingEvent( FetchCurrentWeatherPresenter.class,true ) );
-            eventbus.send( new FetchCurrentWeatherEvent( FetchCurrentWeatherPresenter.class ) );
+            eventbus.send( new PendingEvent( JobPingPresenter.class,true ) );
+            eventbus.send( new JobPingEvent( JobPingPresenter.class ) );
             setActive( true );
         } else {
-            eventbus.send( new CancelEvent( FetchCurrentWeatherPresenter.class ) );
-            eventbus.send( new PendingEvent( FetchCurrentWeatherPresenter.class,false ) );
+            eventbus.send( new CancelEvent( JobPingPresenter.class ) );
+            eventbus.send( new PendingEvent( JobPingPresenter.class,false ) );
             setActive( false );
         }
     }
 
     private void onData( final Data data ) {
-        if ( data instanceof CurrentWeatherData ) {
-            currentweatherdata = ( CurrentWeatherData)data;
+        if ( data instanceof PingData ) {
+            currentpingdata = ( PingData)data;
             display.setItemCount( 1 );
             display.setPosition( 0 );
         } else if ( data instanceof EOD ) {
-            if ( data.getOrigin() == FetchCurrentWeatherPresenter.class ) {
-                eventbus.send( new PendingEvent( FetchCurrentWeatherPresenter.class,false ) );
+            if ( data.getOrigin() == JobPingPresenter.class ) {
+                eventbus.send( new PendingEvent( JobPingPresenter.class,false ) );
                 setActive( false );
             }
         }
