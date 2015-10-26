@@ -23,25 +23,23 @@ import gubo.sample.event.*;
 /*
  *
  */
-public class JobPingAction extends gubo.slipwire.Action
+public class TestAction extends gubo.slipwire.Action
 {
-    private static final String ENDPOINT = "http://localhost";
-
-    private static class Greeting
+    private static class Test
     {
-        public String greeting;
+        public String result;
     }
 
     private static class Result
     {
         public long ms;
 
-        public Greeting resultant;
+        public Test test;
     }
 
-    public interface ping {
-        @GET( "/ping" )
-        public Observable<JobPingAction.Result> get(
+    public interface _test {
+        @GET( "/test" )
+        public Observable<TestAction.Result> get(
                 @Query( "delay" ) String delay,
                 @Query( "debug" ) String debug
         );
@@ -54,7 +52,7 @@ public class JobPingAction extends gubo.slipwire.Action
     private final int port;
 
     @Inject
-    public JobPingAction( final Object origin,final EventBus eventbus,final DataBus databus,final int port ) throws IllegalArgumentException {
+    public TestAction( final Object origin,final EventBus eventbus,final DataBus databus,final int port ) throws IllegalArgumentException {
         super( origin );
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
@@ -68,14 +66,14 @@ public class JobPingAction extends gubo.slipwire.Action
     public void invoke() {
         if ( !latch.trip() ) { throw new IllegalStateException(); }
 
-        DBG.v( "JobPingAction.invoke" );
+        DBG.v( "TestAction.invoke" );
 
         final Action1<Event> EA1 = new Action1<Event>() {
             @Override
             public void call( final Event event ) {
                 if ( event instanceof CancelEvent ) {
                     final Object origin = event.getOrigin();
-                    if ( origin == JobPingAction.this.getOrigin() ) {
+                    if ( origin == TestAction.this.getOrigin() ) {
                         cancel();
                     }
                 } else if ( event instanceof CancelAllEvent ) {
@@ -88,35 +86,29 @@ public class JobPingAction extends gubo.slipwire.Action
 
         final Gson gson = new GsonBuilder().create();
 
-        eventbus.send( new NetworkActivityEvent( JobPingAction.class, true ) );
-
-        final Observer<JobPingAction.Result> observer = new Observer<JobPingAction.Result>() {
-            @Override public void onNext( final JobPingAction.Result result ) {
-                final PingData pingdata = new PingData( origin );
-                final StatusData statusdata = new StatusData( origin );
+        final Observer<TestAction.Result> observer = new Observer<TestAction.Result>() {
+            @Override public void onNext( final TestAction.Result result ) {
+                final TestData testdata = new TestData( origin );
                 try {
-                    pingdata.greeting = result.resultant.greeting;
-                    statusdata.message = result.resultant.greeting;
+                    testdata.result = result.test.result;
                 } catch ( Exception x ) {
                     DBG.m( x );
                 }
-                databus.send( pingdata );
-                databus.send( statusdata );
+                databus.send( testdata );
             }
             @Override public void onCompleted() {
                 compositesubscription.unsubscribe();
-                eventbus.send( new NetworkActivityEvent( JobPingAction.class,false ) );
                 databus.send( new EOD( origin ) );
             }
             @Override public void onError( Throwable x ) {
                 DBG.m( x );
                 compositesubscription.unsubscribe();
-                eventbus.send( new NetworkActivityEvent( JobPingAction.class,false ) );
                 databus.send( new EOD( origin ) );
             }
         };
 
-        final String endpoint = JobPingAction.ENDPOINT + ":" + port;
+        final String endpoint = "http://" + Util.getIPv4Address() + ":" + port;
+        DBG.v( "TestAction.endpoint: " + endpoint );
 
         final RestAdapter restadapter = new RestAdapter.Builder()
                 .setEndpoint( endpoint )
@@ -125,8 +117,8 @@ public class JobPingAction extends gubo.slipwire.Action
                 .setLog( new AndroidLog( "DBG" ) )
                 .build();
 
-        final Subscription restsubscription = restadapter.create( ping.class )
-                .get( "2500", "false" )
+        final Subscription restsubscription = restadapter.create( _test.class )
+                .get( "0", "false" )
                 .subscribeOn( Schedulers.newThread() )
                 .observeOn( AndroidSchedulers.mainThread() )
                 .subscribe( observer );
@@ -136,30 +128,11 @@ public class JobPingAction extends gubo.slipwire.Action
 
     @Override
     public void cancel() {
-        eventbus.send( new NetworkActivityEvent( JobPingAction.class,false ) );
         databus.send( new EOD( origin ) );
 
         compositesubscription.unsubscribe();
 
-        DBG.m( "JobPingAction.cancel" );
+        DBG.m( "TestAction.cancel" );
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

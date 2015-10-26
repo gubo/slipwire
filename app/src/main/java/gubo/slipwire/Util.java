@@ -1,12 +1,13 @@
 
 package gubo.slipwire;
 
+import java.net.*;
+import java.util.*;
+
 import android.os.*;
 import android.app.*;
 import android.content.*;
 import android.content.pm.*;
-
-import java.util.List;
 
 /**
  *
@@ -56,6 +57,28 @@ public class Util
             DBG.m( x );
         }
         return running;
+    }
+
+    public static String getIPv4Address() {
+        String ipv4address = null;
+
+        try {
+            final List<NetworkInterface> networkinterfaces = Collections.list( NetworkInterface.getNetworkInterfaces() );
+            for ( final NetworkInterface networkinterface : networkinterfaces ) {
+                final List<InetAddress> addresses = Collections.list( networkinterface.getInetAddresses() );
+                for ( final InetAddress address : addresses ) {
+                    if ( (address == null) || address.isLoopbackAddress() ) { continue; }
+                    if ( address instanceof Inet4Address ) {
+                        ipv4address = address.getHostAddress().toString();
+                        break;
+                    }
+                }
+            }
+        } catch ( Exception x ) {
+            DBG.m( x );
+        }
+
+        return ipv4address;
     }
 
     public static void assertMainThread() {

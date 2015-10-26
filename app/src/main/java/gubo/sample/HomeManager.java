@@ -1,6 +1,8 @@
 
 package gubo.sample;
 
+import android.widget.Toast;
+
 import javax.inject.*;
 
 import rx.*;
@@ -31,10 +33,11 @@ class HomeManager implements Manageable
     private FetchCurrentWeatherPresenter fetchcurrentweatherpresenter;
     private FetchRandomWikiPresenter fetchrandomwikipresenter;
     private FetchRandomLandSatPresenter fetchrandomlandsatpresenter;
-    private JobPingPresenter jobpingpresenter;
+    private PingPresenter jobpingpresenter;
     private CurrentWeatherPresenter currentweatherpresenter;
     private RandomWikiPresenter randomwikipresenter;
     private RandomLandSatPresenter randomlandsatpresenter;
+    private GalleryPresenter gallerypresenter;
     private StatusPresenter statuspresenter;
 
     private int port;
@@ -66,14 +69,15 @@ class HomeManager implements Manageable
         fetchcurrentweatherpresenter = new FetchCurrentWeatherPresenter( eventbus,databus );
         fetchrandomwikipresenter = new FetchRandomWikiPresenter( eventbus,databus );
         fetchrandomlandsatpresenter = new FetchRandomLandSatPresenter( eventbus,databus );
-        jobpingpresenter = new JobPingPresenter( eventbus,databus );
+        jobpingpresenter = new PingPresenter( eventbus,databus );
         currentweatherpresenter = new CurrentWeatherPresenter( eventbus,databus );
         randomwikipresenter = new RandomWikiPresenter( eventbus,databus );
         randomlandsatpresenter = new RandomLandSatPresenter( eventbus,databus );
+        gallerypresenter = new GalleryPresenter( eventbus,databus );
         statuspresenter = new StatusPresenter( eventbus,databus );
     }
 
-    void setJobletPort( final int port ) { this.port = port; }
+    void setPort( final int port ) { this.port = port; }
 
     @Override
     public void bind( final android.app.Activity activity ) {
@@ -86,16 +90,18 @@ class HomeManager implements Manageable
         fetchcurrentweatherpresenter.bind( new FetchCurrentWeatherAdapter( fetchcurrentweatherpresenter,activity.findViewById( R.id.home_menubar_fetch_currentweather ) ) );
         fetchrandomwikipresenter.bind( new FetchRandomWikiAdapter( fetchrandomwikipresenter, activity.findViewById( R.id.home_menubar_fetch_randomwiki ) ) );
         fetchrandomlandsatpresenter.bind( new FetchRandomLandSatAdapter( fetchrandomlandsatpresenter, activity.findViewById( R.id.home_menubar_fetch_randomlandsat ) ) );
-        jobpingpresenter.bind( new JobPingAdapter( jobpingpresenter,activity.findViewById( R.id.home_menubar_job_ping ) ) );
+        jobpingpresenter.bind( new PingAdapter( jobpingpresenter,activity.findViewById( R.id.home_menubar_ping ) ) );
         currentweatherpresenter.bind( new CurrentWeatherAdapter( currentweatherpresenter,activity.findViewById( R.id.home_currentweather ) ) );
         randomwikipresenter.bind( new RandomWikiAdapter( randomwikipresenter, activity.findViewById( R.id.home_randomwiki ) ) );
         randomlandsatpresenter.bind( new RandomLandSatAdapter( randomlandsatpresenter,activity.findViewById( R.id.home_randomlandsat ) ) );
-        statuspresenter.bind( new StatusAdapter( statuspresenter,activity.findViewById( R.id.home_statusbar ) ) );
+        gallerypresenter.bind( new GalleryAdapter( gallerypresenter,activity.findViewById( R.id.home_gallery ) ) );
+        statuspresenter.bind( new StatusAdapter( statuspresenter, activity.findViewById( R.id.home_statusbar ) ) );
     }
 
     @Override
     public void unbind() {
         statuspresenter.bind( null );
+        gallerypresenter.bind( null );
         randomlandsatpresenter.bind( null );
         randomwikipresenter.bind( null );
         currentweatherpresenter.bind( null );
@@ -114,6 +120,7 @@ class HomeManager implements Manageable
     @Override
     public void unmanage() {
         statuspresenter.release();
+        gallerypresenter.release();
         randomlandsatpresenter.release();
         randomwikipresenter.release();
         currentweatherpresenter.release();
@@ -139,7 +146,8 @@ class HomeManager implements Manageable
         if ( event instanceof FetchRandomWikiEvent ) { new FetchRandomWikiAction( event.getOrigin(),eventbus,databus ).invoke(); }
         if ( event instanceof FetchRandomLandSatEvent ) { new FetchRandomLandSatAction( event.getOrigin(),eventbus,databus ).invoke(); }
 
-        if ( event instanceof JobPingEvent ) { new JobPingAction( event.getOrigin(),eventbus,databus,port ).invoke(); }
+        if ( event instanceof PingEvent ) { new PingAction( event.getOrigin(),eventbus,databus,port ).invoke(); }
+        if ( event instanceof TestEvent ) { new TestAction( event.getOrigin(),eventbus,databus,port ).invoke(); }
 
         if ( event instanceof BooksEvent ) {
             final BooksEvent booksevent = ( BooksEvent)event;

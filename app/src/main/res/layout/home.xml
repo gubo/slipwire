@@ -13,6 +13,10 @@
         <include layout="@layout/home_menubar"/>
 
         <HorizontalScrollView
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarFadeDuration="0"
+            android:fadeScrollbars="false"
+            android:scrollbars="none"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="-1dp">
@@ -27,6 +31,24 @@
         </HorizontalScrollView>
 
         <include layout="@layout/home_statusbar"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/home_gallery"
+        android:background="#FFFFFFFF"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="3dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:background="#000000"
+            android:id="@+id/home_gallery_picture"
+            android:layout_width="64dp"
+            android:layout_height="64dp">
+        </ImageView>
     </LinearLayout>
 
     <gubo.sample.view.BusyView

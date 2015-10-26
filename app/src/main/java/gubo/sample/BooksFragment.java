@@ -28,7 +28,7 @@ public class BooksFragment extends Fragment
 
         DBG.m( "BooksFragment.onCreate" );
 
-        final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
+        final SampleComponent samplecomponent = SampleApplication.getSampleComponent();
         samplecomponent.inject( this );
         booksmanager = ibooksmanager;
         ibooksmanager = null;

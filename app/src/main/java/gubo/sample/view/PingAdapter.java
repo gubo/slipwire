@@ -13,13 +13,13 @@ import gubo.sample.data.*;
 /*
  *
  */
-public class JobPingAdapter implements JobPingPresenter.Display,DataSink,View.OnClickListener
+public class PingAdapter implements PingPresenter.Display,DataSink,View.OnClickListener
 {
-    private JobPingPresenter.JobListener listener;
+    private PingPresenter.JobListener listener;
     private final DataSource datasource;
     private final View view;
 
-    public JobPingAdapter( final DataSource<Data> datasource,final View view ) throws IllegalArgumentException {
+    public PingAdapter( final DataSource<Data> datasource, final View view ) throws IllegalArgumentException {
         if ( (datasource == null) || (view == null) ) { throw new IllegalArgumentException(); }
 
         this.datasource = datasource;
@@ -29,7 +29,7 @@ public class JobPingAdapter implements JobPingPresenter.Display,DataSink,View.On
     }
 
     @Override
-    public void setJobListener( final JobPingPresenter.JobListener listener ) {
+    public void setJobListener( final PingPresenter.JobListener listener ) {
         this.listener = listener;
     }
 

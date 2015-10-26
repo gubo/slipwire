@@ -38,7 +38,6 @@ public class LaunchActivity extends Activity
 
     private void home() {
         final Intent intent = new Intent( this,HomeActivity.class );
-        intent.putExtra( "startedby",LaunchActivity.class.getName() );
         startActivity( intent );
         this.finish();
     }

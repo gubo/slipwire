@@ -105,16 +105,20 @@ public class VOLLEY
     private RequestQueue requestqueue;
     private ImageLoader imageloader;
 
-    public static final void startup( final Context context ) throws IllegalArgumentException {
+    public static final void startup( final Context context ) throws IllegalArgumentException,IllegalStateException {
         Util.assertMainThread();
-        DBG.m( "VOLLEY.instantiated" );
+
+        if ( instance != null ) { throw new IllegalStateException(); }
+
+        DBG.m( "VOLLEY.startup" );
+
         if ( instance == null ) {
             instance = new VOLLEY();
-            instance.initialize( context );
+            instance._startup( context );
         }
     }
 
-    public static final VOLLEY getInstance() throws IllegalArgumentException {
+    public static final VOLLEY getInstance() {
         Util.assertMainThread();
         return instance;
     }
@@ -161,19 +165,20 @@ public class VOLLEY
      */
     public static void shutdown() {
         Util.assertMainThread();
+
         if ( instance != null ) {
             instance.requestqueue.stop();
             instance = null;
-            DBG.m( "VOLLEY.shutdown" );
         }
+
+        DBG.m( "VOLLEY.shutdown" );
     }
 
     /*
      * http://developer.android.com/training/volley/index.html
      */
-    private void initialize( final Context context ) throws IllegalArgumentException {
+    private void _startup( final Context context ) throws IllegalArgumentException {
         if ( context == null ) { throw new IllegalArgumentException(); }
-        DBG.m( "VOLLEY.initialize" );
         try {
             requestqueue = Volley.newRequestQueue( context.getApplicationContext() );
 
@@ -183,7 +188,7 @@ public class VOLLEY
             final int screenBytes = screenWidth * screenHeight * 4; // 4 bytes per pixel
             final int cachesize = ( screenBytes * 3 ); // 3 screens worth - google suggestion
             final ImageLoader.ImageCache imagecache = new BitmapLoaderCache( cachesize );
-            DBG.m( "VOLLEY: imagecache = " + cachesize );
+            DBG.v( "VOLLEY: imagecache = " + cachesize );
 
             imageloader = new ImageLoader( requestqueue,imagecache );
         } catch ( Exception x ) {

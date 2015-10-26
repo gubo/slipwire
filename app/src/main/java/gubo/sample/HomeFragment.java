@@ -5,14 +5,13 @@ import javax.inject.*;
 
 import android.os.*;
 import android.app.*;
-import android.content.*;
 
 import gubo.slipwire.*;
 
 /*
- * - has a HomeManager
  * - bind/unbind the HomeManager
  * - retain instance to persist over HomeActivity lifecycle
+ * - startup/shutdown VOLLEY AND JETTY
  */
 public class HomeFragment extends Fragment
 {
@@ -23,7 +22,6 @@ public class HomeFragment extends Fragment
     HomeManager ihomemanager;
 
     private HomeManager homemanager;
-    private Intent serverintent;
 
     @Override
     public void onCreate( final Bundle savedInstanceState ) {
@@ -31,14 +29,13 @@ public class HomeFragment extends Fragment
 
         DBG.m( "HomeFragment.onCreate" );
 
-        final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
+        final SampleComponent samplecomponent = SampleApplication.getSampleComponent();
         samplecomponent.inject( this );
         homemanager = ihomemanager;
         ihomemanager = null;
 
-        serverintent = new Intent( getActivity(),gubo.slipwire.Server.class );
-        serverintent.putExtra( "JobletFactory", gubo.sample.joblet.JobletFactory.class.getName() );
-        getActivity().startService( serverintent );
+        JETTY.startup( SampleContextBroker.instance );
+        VOLLEY.startup( getActivity().getApplicationContext() );
 
         homemanager.manage();
 
@@ -51,27 +48,8 @@ public class HomeFragment extends Fragment
 
         DBG.m( "HomeFragment.onResume" );
 
-        /*
-         * here we must first discover the local server port, then can bind homemanager
-         */
-        final Context context = getActivity();
-        final ServiceConnection connection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected( final ComponentName name,final IBinder service ) {
-                final Server.Binder serverbinder = ( Server.Binder ) service;
-                final Server server = serverbinder.getService();
-                final int port = server.getPort();
-                DBG.m( "HomeFragment: port=" + port );
-                context.unbindService( this );
-                homemanager.setJobletPort( port );
-                homemanager.bind( getActivity() );
-            }
-            @Override
-            public void onServiceDisconnected( final ComponentName name ) {
-                context.unbindService( this );
-            }
-        };
-        context.bindService( serverintent,connection,0 );
+        homemanager.setPort( JETTY.getPort() );
+        homemanager.bind( getActivity() );
     }
 
     @Override
@@ -90,8 +68,10 @@ public class HomeFragment extends Fragment
         homemanager.unmanage();
         homemanager = null;
 
-        getActivity().stopService( serverintent );
-        serverintent = null;
+        SampleContextBroker.instance.setActivityContext( null );
+
+        VOLLEY.shutdown();
+        JETTY.shutdown();
 
         DBG.m( "HomeFragment.onDestroy" );
     }

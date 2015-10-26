@@ -6,17 +6,19 @@ import javax.inject.*;
 import android.os.*;
 import android.app.*;
 import android.view.*;
+import android.content.*;
 import android.support.v7.app.*;
 import android.support.v7.app.ActionBar;
 
 import gubo.slipwire.*;
+import gubo.sample.data.*;
 import gubo.sample.event.*;
 
 /*
- * - has a EventBus
  * - inflate home layout
  * - create HomeFragment
  * - customize ActionBar
+ * - send Data for Activity results
  * - send Events for item selections
  */
 public class HomeActivity extends AppCompatActivity
@@ -25,9 +27,12 @@ public class HomeActivity extends AppCompatActivity
      * Dagger cant inject private fields
      */
     @Inject EventBus ieventbus;
+    @Inject DataBus idatabus;
+
+    private final Latch newtask = new Latch();
 
     private EventBus eventbus;
-    private boolean launched;
+    private DataBus databus;
 
     @Override
     protected void onCreate( final Bundle savedInstanceState ) {
@@ -35,14 +40,12 @@ public class HomeActivity extends AppCompatActivity
 
         DBG.m( "HomeActivity.onCreate" );
 
-        final String startedby = getIntent().getStringExtra( "startedby" );
-        launched =  ( LaunchActivity.class.getName().equals( startedby ) );
-        getIntent().putExtra( "startedby",( String)null );
-
-        final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
+        final SampleComponent samplecomponent = SampleApplication.getSampleComponent();
         samplecomponent.inject( this );
         eventbus = ieventbus;
+        databus = idatabus;
         ieventbus = null;
+        idatabus = null;
 
         setContentView( R.layout.home );
 
@@ -72,12 +75,16 @@ public class HomeActivity extends AppCompatActivity
         boolean handled = false;
 
         switch ( item.getItemId() ) {
-        case R.id.action_search:
+        case R.id.menu_search:
             eventbus.send( new gubo.sample.event.SearchEvent( HomeActivity.class ) );
             handled = true;
             break;
-        case R.id.action_books:
+        case R.id.menu_books:
             eventbus.send( new gubo.sample.event.BooksEvent( HomeActivity.class,this ) );
+            handled = true;
+            break;
+        case R.id.menu_test:
+            eventbus.send( new gubo.sample.event.TestEvent( HomeActivity.class ) );
             handled = true;
             break;
         default:
@@ -88,29 +95,50 @@ public class HomeActivity extends AppCompatActivity
         return handled;
     }
 
+    private class Busy implements Runnable
+    {
+        final boolean busy;
+
+        Busy( final boolean busy ) { this.busy = busy; }
+
+        @Override public void run() {
+            eventbus.send( new BusyEvent( HomeActivity.class,busy ) );
+            getWindow().getDecorView().postDelayed( new Busy( false ),1500L );
+        }
+    }
+
+    /*
+     * http://developer.android.com/reference/android/app/Activity.html#onActivityResult(int, int, android.content.Intent)
+     * "You will receive this call immediately before onResume() when your activity is re-starting."
+     */
+    @Override
+    protected void onActivityResult( final int requestcode,final int resultcode,final Intent intent ) {
+        Data data = null;
+
+        try {
+            if ( resultcode == Activity.RESULT_OK ) {
+                switch ( requestcode ) {
+                case GalleryData.REQUESTCODE:
+                    data = GalleryData.fromIntent( intent );
+                    break;
+                }
+            }
+        } catch ( Exception x ) {
+            DBG.m( x );
+        }
+
+        if ( data != null ) {
+            databus.send( data );
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
         DBG.m( "HomeActivity.onResume" );
 
-        STARTBUSY: {
-            final Runnable action = new Runnable() {
-                @Override public void run() {
-                    eventbus.send( new BusyEvent( HomeActivity.class,true ) );
-                }
-            };
-            if ( launched ) { getWindow().getDecorView().postDelayed( action,25L ); }
-        }
-
-        FREE: {
-            final Runnable action = new Runnable() {
-                @Override public void run() {
-                    eventbus.send( new BusyEvent( HomeActivity.class,false ) );
-                }
-            };
-            if ( launched ) { getWindow().getDecorView().postDelayed( action,1500L ); }
-        }
+        if ( newtask.trip() ) { getWindow().getDecorView().postDelayed( new Busy( true ),25L ); }
     }
 
     @Override

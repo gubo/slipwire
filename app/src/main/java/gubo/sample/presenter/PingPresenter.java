@@ -14,7 +14,7 @@ import gubo.sample.event.*;
 /*
  *
  */
-public class JobPingPresenter implements Presenter,DataSource
+public class PingPresenter implements Presenter,DataSource
 {
     public interface JobListener
     {
@@ -23,7 +23,7 @@ public class JobPingPresenter implements Presenter,DataSource
 
     public interface Display extends Presenter.Display,DataSink
     {
-        public void setJobListener( JobPingPresenter.JobListener listener );
+        public void setJobListener( PingPresenter.JobListener listener );
         public void setActive( boolean active );
         public void release();
     }
@@ -31,13 +31,13 @@ public class JobPingPresenter implements Presenter,DataSource
     private final EventBus eventbus;
     private final DataBus databus;
 
-    private JobPingPresenter.Display display;
+    private PingPresenter.Display display;
     private Subscription datasubscription;
     private PingData currentpingdata;
     private boolean currentlyactive;
 
     @Inject
-    public JobPingPresenter( final EventBus eventbus,final DataBus databus ) throws IllegalArgumentException {
+    public PingPresenter( final EventBus eventbus, final DataBus databus ) throws IllegalArgumentException {
         if ( (eventbus == null) || (databus == null) ) { throw new IllegalArgumentException(); }
 
         this.eventbus = eventbus;
@@ -53,18 +53,18 @@ public class JobPingPresenter implements Presenter,DataSource
 
     @Override
     public <D extends Presenter.Display> void bind( final D display ) {
-        DBG.v( "JobPingPresenter.bind " + display );
+        DBG.v( "PingPresenter.bind " + display );
 
         if ( this.display != null ) {
             this.display.setJobListener( null );
             this.display.release();
         }
 
-        this.display = ( JobPingPresenter.Display)display;
+        this.display = ( PingPresenter.Display)display;
 
         if ( this.display != null ) {
-            final JobPingPresenter.JobListener listener = new JobPingPresenter.JobListener() {
-                @Override public void onJob() { JobPingPresenter.this.onJob(); }
+            final PingPresenter.JobListener listener = new PingPresenter.JobListener() {
+                @Override public void onJob() { PingPresenter.this.onJob(); }
             };
             this.display.setJobListener( listener );
         }
@@ -84,7 +84,7 @@ public class JobPingPresenter implements Presenter,DataSource
             display.release();
         }
 
-        DBG.v( "JobPingPresenter.release" );
+        DBG.v( "PingPresenter.release" );
     }
 
     @Override public Data getDataFor( final int position ) { return currentpingdata; }
@@ -92,12 +92,12 @@ public class JobPingPresenter implements Presenter,DataSource
 
     private void onJob() {
         if ( !currentlyactive ) {
-            eventbus.send( new PendingEvent( JobPingPresenter.class,true ) );
-            eventbus.send( new JobPingEvent( JobPingPresenter.class ) );
+            eventbus.send( new PendingEvent( PingPresenter.class,true ) );
+            eventbus.send( new PingEvent( PingPresenter.class ) );
             setActive( true );
         } else {
-            eventbus.send( new CancelEvent( JobPingPresenter.class ) );
-            eventbus.send( new PendingEvent( JobPingPresenter.class,false ) );
+            eventbus.send( new CancelEvent( PingPresenter.class ) );
+            eventbus.send( new PendingEvent( PingPresenter.class,false ) );
             setActive( false );
         }
     }
@@ -108,8 +108,8 @@ public class JobPingPresenter implements Presenter,DataSource
             display.setItemCount( 1 );
             display.setPosition( 0 );
         } else if ( data instanceof EOD ) {
-            if ( data.getOrigin() == JobPingPresenter.class ) {
-                eventbus.send( new PendingEvent( JobPingPresenter.class,false ) );
+            if ( data.getOrigin() == PingPresenter.class ) {
+                eventbus.send( new PendingEvent( PingPresenter.class,false ) );
                 setActive( false );
             }
         }

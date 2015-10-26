@@ -53,7 +53,7 @@ public class BooksPresenter implements Presenter,DataSource<Book>
 
     @Override
     public <D extends Presenter.Display> void bind( D display ) {
-        DBG.m( "BooksPresenter.bind " + display );
+        DBG.v( "BooksPresenter.bind " + display );
 
         if ( this.display != null ) {
             this.display.release();

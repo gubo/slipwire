@@ -28,7 +28,7 @@ public class BooksActivity extends AppCompatActivity
         super.onCreate( savedInstanceState );
         DBG.m( "BooksActivity.onCreate" );
 
-        final SampleComponent samplecomponent = SampleApplication.getInstance().getSampleComponent();
+        final SampleComponent samplecomponent = SampleApplication.getSampleComponent();
         samplecomponent.inject( this );
         eventbus = ieventbus;
         ieventbus = null;

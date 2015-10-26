@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -34,7 +35,6 @@
             android:name="gubo.sample.BooksActivity">
         </activity>
 
-        <service android:name="gubo.slipwire.Server" android:exported="false"></service>
     </application>
 
 </manifest>
