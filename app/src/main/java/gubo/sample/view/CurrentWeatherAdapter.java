@@ -26,6 +26,8 @@ public class CurrentWeatherAdapter implements CurrentWeatherPresenter.Display,Da
         this.view = view;
     }
 
+    @Override public void prepare() {}
+
     @Override public void release() {}
 
     @Override public void setItemCount( final int itemcount ) {}
@@ -44,14 +46,14 @@ public class CurrentWeatherAdapter implements CurrentWeatherPresenter.Display,Da
         try {
             final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.home_currentweather_status_icon );
             if ( currentweatherdata.iconurl != null ) {
-                iconnetworkimageview.setImageUrl( currentweatherdata.iconurl, VOLLEY.getInstance().getImageLoader() );
+                iconnetworkimageview.setImageUrl( currentweatherdata.iconurl,VOLLEY.getInstance().getImageLoader() );
             }
 
             final TextView headingtextview = ( TextView )view.findViewById( R.id.home_currentweather_status_heading );
-            headingtextview.setText( ( "" + currentweatherdata.heading ).toUpperCase() );
+            headingtextview.setText( ("" + currentweatherdata.heading ).toUpperCase() );
 
             final TextView temperaturetextview = ( TextView )view.findViewById( R.id.home_currentweather_status_temperature );
-            temperaturetextview.setText( ( int)farenheit( currentweatherdata.temp ) + "\u00B0F    " + ( int)currentweatherdata.temp + "\u00B0C" );
+            temperaturetextview.setText( ( int ) farenheit( currentweatherdata.temp ) + "\u00B0F    " + ( int ) currentweatherdata.temp + "\u00B0C" );
         } catch ( Exception x ) {
             DBG.m( x );
         }

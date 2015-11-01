@@ -15,6 +15,7 @@
         <HorizontalScrollView
             android:scrollbarAlwaysDrawHorizontalTrack="false"
             android:scrollbarFadeDuration="0"
+            android:overScrollMode="never"
             android:fadeScrollbars="false"
             android:scrollbars="none"
             android:layout_weight="1"

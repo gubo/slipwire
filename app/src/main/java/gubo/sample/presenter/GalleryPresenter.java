@@ -78,8 +78,8 @@ public class GalleryPresenter implements Presenter,DataSource
     private void onData( final Data data ) {
         if ( data instanceof GalleryData ) {
             currentgallerydata = ( GalleryData)data;
+            refresh();
         }
-        refresh();
     }
 
     private void refresh() {

@@ -117,10 +117,8 @@ public class HomeActivity extends AppCompatActivity
 
         try {
             if ( resultcode == Activity.RESULT_OK ) {
-                switch ( requestcode ) {
-                case GalleryData.REQUESTCODE:
+                if ( GalleryData.isMyIntention( requestcode ) ) {
                     data = GalleryData.fromIntent( intent );
-                    break;
                 }
             }
         } catch ( Exception x ) {

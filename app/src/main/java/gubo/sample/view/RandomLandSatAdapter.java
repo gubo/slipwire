@@ -44,6 +44,8 @@ public class RandomLandSatAdapter implements RandomLandSatPresenter.Display,Data
         try {
             final com.android.volley.toolbox.NetworkImageView imagenetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.home_randomlandsat_image );
             if ( randomlandsatdata.url != null ) {
+//                imagenetworkimageview.setErrorImageResId( R.drawable.ic_errorimage );
+//                imagenetworkimageview.setDefaultImageResId( R.drawable.ic_defaultimage );
                 imagenetworkimageview.setImageUrl( randomlandsatdata.url, VOLLEY.getInstance().getImageLoader() );
             }
 

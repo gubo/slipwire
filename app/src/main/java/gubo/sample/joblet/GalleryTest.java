@@ -33,7 +33,7 @@ class GalleryTest implements Test
             final ComponentName componentname = intent.resolveActivity( contextbroker.getApplicationContext().get().getPackageManager() );
             if ( componentname != null ) {
                 final Activity activity = ( Activity ) contextbroker.getActivityContext().get();
-                activity.startActivityForResult( intent,GalleryData.REQUESTCODE );
+                activity.startActivityForResult( intent,GalleryData.myIntention() );
                 result = "ok";
             } else {
                 result = "not found";

@@ -50,7 +50,7 @@ public class IndexCache<E>
     }
 
     /*
-     * TODO: single iteration over keys ? ensure O(1)
+     * TODO: single iteration over keys ? make O(n)
      */
     void flush( final Integer position ) {
         if ( position == null ) { return; }

@@ -8,13 +8,16 @@ import gubo.slipwire.*;
 
 public class GalleryData extends Data
 {
-    public static final int REQUESTCODE = 900;
+    private static final int requestcode = RequestCode.newCode();
 
     public Uri uri;
 
     public GalleryData( final Object origin ) {
         super( origin );
     }
+
+    public static int myIntention() { return GalleryData.requestcode; }
+    public static boolean isMyIntention( final int requestcode ) { return GalleryData.requestcode == requestcode; }
 
     public static GalleryData fromIntent( final Intent intent ) throws IllegalArgumentException {
         if ( intent == null ) { throw new IllegalArgumentException(); }
