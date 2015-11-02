@@ -23,6 +23,10 @@ The following diagram depicts the Slipwire structure:
 <img src="https://docs.google.com/drawings/d/1k1kYMa2RuOlPbSxPCuSGIr2_Aa_GZToKcL8CRTUJ0i8/pub?w=960&amp;h=720">
 
 ##### DEPENDENCIES <br>
-compile 'io.reactivex:rxandroid:1.0.1'          [LICENSE](https://github.com/ReactiveX/RxAndroid) <br>
-compile 'io.reactivex:rxjava:1.0.14'            [LICENSE](https://github.com/ReactiveX/RxJava) <br>
-compile 'com.squareup.retrofit:retrofit:1.9.0'  [LICENSE](http://square.github.io/retrofit/) <br>
+compile 'com.google.code.gson:gson:2.3' <br>
+compile project(':volley') *https://android.googlesource.com/platform/frameworks/volley* <br>
+compile 'io.reactivex:rxandroid:1.0.1'              [LICENSE](https://github.com/ReactiveX/RxAndroid) <br>
+compile 'io.reactivex:rxjava:1.0.14'                [LICENSE](https://github.com/ReactiveX/RxJava) <br>
+compile 'com.squareup.retrofit:retrofit:1.9.0'      [LICENSE](http://square.github.io/retrofit/) <br>
+compile 'org.eclipse.jetty:jetty-server:7.6.0.RC4'  [LICENSE](http://www.eclipse.org/jetty/licenses.php) <br>
+compile 'org.eclipse.jetty:jetty-servlet:7.6.0.RC4' [LICENSE](http://www.eclipse.org/jetty/licenses.php) <br>
