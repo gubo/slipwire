@@ -1,14 +1,7 @@
 # slipwire
 A strongly decoupled architecture for android applications, based on RxJava.
 
-***Slipwire*** is an MVP patterned framework for building Android applications, where a view is decoupled from the application logic and flow-control - views are only aware of a DataSource interface, and a type `<? extends Data>` that it is able to visualize. It utilises an EventBus and a DataBus, where a view is injected with a DataSource, and the Presenter.Display interface acts as a DataSink. The introduction of a DataBus, along with the DataSource interface, allow the Presenter to mediate (provide,cache) the data accessible to a view. As such, a view can 'request' more data, but consumes data in a reactive manner.
-
-*An adapter class that implements a Presenter.Display interface may exist and be coupled to a view, but the view (and any backing-store adpater) itself need not be subclassed to contain any reactive code.*
-
-<img src="https://docs.google.com/drawings/d/1k1kYMa2RuOlPbSxPCuSGIr2_Aa_GZToKcL8CRTUJ0i8/pub?w=960&amp;h=720">
-
-In ***slipwire***, tasks are treated the same as network fetches. A local HTTP server runs and provides a servlet-like conatiner
-to run jobs (joblets). An action class mediates the execution of a job. For example, an event may result in an action that subscribes to an observable over an http://localhost:* call. This results in the execution of a joblet. Perhaps this joblet broadcasts an intent for image selection from users gallery. Treating localized work in this asynchronous way leads to modularization and decoupling of the components of an application.
+***Slipwire*** is framework for building Android applications, which, following the MVP pattern, aims to strictly decouple Android View instances from application flow and logic. To achieve this, Slipwire introduces a second bus, the DataBus, and makes an abstraction on the data flow between a Presenter and it's Display interface - the Presenter represents a DataSource and the Presenter.Display interface represents a DataSink. Thus, we can have only the Presenter.Display (an adapter) that is loosely coupled to the Android View instance.
 
 ##### DEPENDENCIES <br>
 compile 'io.reactivex:rxandroid:1.0.1'          [LICENSE](https://github.com/ReactiveX/RxAndroid) <br>
