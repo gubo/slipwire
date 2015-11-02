@@ -21,6 +21,19 @@ The following diagram depicts the Slipwire structure:
 <br>
 <br>
 
+##### GETTING STARTED <br>
+
+The repository contains a sample application.<br>
+The core of Slipwire is in the gubo.slipwire package.
+
+##### DOCUMENTATION <br>
+
+*Coming Soon*
+
+##### CONTRIBUTING <br>
+
+*Coming Soon*
+
 ##### DEPENDENCIES <br>
 compile 'com.google.code.gson:gson:2.3' <br>
 compile project(':volley') <sub>*https://android.googlesource.com/platform/frameworks/volley*</sub> <br>
@@ -29,3 +42,7 @@ compile 'io.reactivex:rxjava:1.0.14'                <sub>[LICENSE](https://githu
 compile 'com.squareup.retrofit:retrofit:1.9.0'      <sub>[LICENSE](http://square.github.io/retrofit/)</sub> <br>
 compile 'org.eclipse.jetty:jetty-server:7.6.0.RC4'  <sub>[LICENSE](http://www.eclipse.org/jetty/licenses.php)</sub> <br>
 compile 'org.eclipse.jetty:jetty-servlet:7.6.0.RC4' <sub>[LICENSE](http://www.eclipse.org/jetty/licenses.php)</sub> <br>
+
+##### LICENSE <br>
+
+*Coming Soon*
