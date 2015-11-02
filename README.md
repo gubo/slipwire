@@ -15,8 +15,11 @@ In addition to the above recommendations for data-flow, Slipwire encourages that
 - <sub>Presenter(s) should be the sole sender of *Event*s that are a response to user input</sub>
 - <sub>Presenter(s) should be the sole sender of *Event*s that propogate *Action*s which create *Data*</sub>
 
+<br>
 The following diagram depicts the Slipwire structure:
 <img src="https://docs.google.com/drawings/d/1k1kYMa2RuOlPbSxPCuSGIr2_Aa_GZToKcL8CRTUJ0i8/pub?w=960&amp;h=720">
+<br>
+<br>
 
 ##### DEPENDENCIES <br>
 compile 'com.google.code.gson:gson:2.3' <br>
