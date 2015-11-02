@@ -22,7 +22,7 @@ public class BusyPresenter implements Presenter
 
     private BusyPresenter.Display display;
     private Subscription eventsubscription;
-    private int busycount;
+    private int busycount = 1;
 
     static class Unknown {}
 

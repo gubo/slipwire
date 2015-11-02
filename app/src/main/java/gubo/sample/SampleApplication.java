@@ -36,6 +36,8 @@ public class SampleApplication extends Application
         DBG.m( "AND V" + Build.VERSION.SDK_INT );
         DBG.m( "SampleApplication.onCreate" );
 
+        com.squareup.leakcanary.LeakCanary.install( this );
+
         instance = this;
         samplecomponent = DaggerSampleComponent.create();
 

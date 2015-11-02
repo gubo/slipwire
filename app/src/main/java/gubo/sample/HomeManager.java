@@ -98,6 +98,10 @@ class HomeManager implements Manageable
         statuspresenter.bind( new StatusAdapter( statuspresenter, activity.findViewById( R.id.home_statusbar ) ) );
     }
 
+    void ready() {
+        eventbus.send( new BusyEvent( HomeManager.class,false ) );
+    }
+
     @Override
     public void unbind() {
         statuspresenter.bind( null );

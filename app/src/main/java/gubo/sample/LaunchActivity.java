@@ -3,6 +3,7 @@ package gubo.sample;
 
 import android.os.*;
 import android.app.*;
+import android.view.*;
 import android.content.*;
 
 import gubo.slipwire.*;
@@ -27,13 +28,17 @@ public class LaunchActivity extends Activity
 
         DBG.m( "LaunchActivity.onResume" );
 
-        final Runnable action = new Runnable() {
-            @Override
-            public void run() {
-                home();
-            }
-        };
-        getWindow().getDecorView().postDelayed( action, 1500L );
+        final View goview = findViewById( R.id.launch_go );
+        if ( goview.getVisibility() != View.VISIBLE ) {
+            final Runnable action = new Runnable() {
+                @Override public void run() { home(); }
+            };
+            getWindow().getDecorView().postDelayed( action,750L );
+        }
+    }
+
+    public void onGO( final View view ) {
+        home();
     }
 
     private void home() {

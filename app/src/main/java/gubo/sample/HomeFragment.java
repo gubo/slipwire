@@ -50,6 +50,9 @@ public class HomeFragment extends Fragment
 
         homemanager.setPort( JETTY.getPort() );
         homemanager.bind( getActivity() );
+
+        final Runnable action = new Runnable() { @Override public void run() { homemanager.ready(); } };
+        getActivity().getWindow().getDecorView().postDelayed( action,1000 );
     }
 
     @Override

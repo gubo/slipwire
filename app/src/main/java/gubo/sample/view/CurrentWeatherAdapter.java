@@ -46,6 +46,8 @@ public class CurrentWeatherAdapter implements CurrentWeatherPresenter.Display,Da
         try {
             final com.android.volley.toolbox.NetworkImageView iconnetworkimageview = ( com.android.volley.toolbox.NetworkImageView)view.findViewById( R.id.home_currentweather_status_icon );
             if ( currentweatherdata.iconurl != null ) {
+                iconnetworkimageview.setErrorImageResId( R.drawable.ic_errorimage );
+                iconnetworkimageview.setDefaultImageResId( R.drawable.ic_defaultimage );
                 iconnetworkimageview.setImageUrl( currentweatherdata.iconurl,VOLLEY.getInstance().getImageLoader() );
             }
 

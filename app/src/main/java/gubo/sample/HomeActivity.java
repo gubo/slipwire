@@ -29,8 +29,6 @@ public class HomeActivity extends AppCompatActivity
     @Inject EventBus ieventbus;
     @Inject DataBus idatabus;
 
-    private final Latch newtask = new Latch();
-
     private EventBus eventbus;
     private DataBus databus;
 
@@ -95,18 +93,6 @@ public class HomeActivity extends AppCompatActivity
         return handled;
     }
 
-    private class Busy implements Runnable
-    {
-        final boolean busy;
-
-        Busy( final boolean busy ) { this.busy = busy; }
-
-        @Override public void run() {
-            eventbus.send( new BusyEvent( HomeActivity.class,busy ) );
-            getWindow().getDecorView().postDelayed( new Busy( false ),1500L );
-        }
-    }
-
     /*
      * http://developer.android.com/reference/android/app/Activity.html#onActivityResult(int, int, android.content.Intent)
      * "You will receive this call immediately before onResume() when your activity is re-starting."
@@ -135,8 +121,6 @@ public class HomeActivity extends AppCompatActivity
         super.onResume();
 
         DBG.m( "HomeActivity.onResume" );
-
-        if ( newtask.trip() ) { getWindow().getDecorView().postDelayed( new Busy( true ),25L ); }
     }
 
     @Override

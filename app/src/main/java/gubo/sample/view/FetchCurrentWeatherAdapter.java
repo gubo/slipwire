@@ -15,7 +15,7 @@ import gubo.sample.presenter.*;
 /*
  *
  */
-public class FetchCurrentWeatherAdapter implements FetchCurrentWeatherPresenter.Display,DataSink,View.OnClickListener
+public class FetchCurrentWeatherAdapter implements FetchCurrentWeatherPresenter.Display,View.OnClickListener
 {
     private FetchCurrentWeatherPresenter.FetchListener listener;
     private final DataSource datasource;

@@ -14,6 +14,17 @@ add volley official repo as a module:
 
 
 
+RETROFIT:
+NOTE - retrofit has some proguard considerations (http://square.github.io/retrofit/):
+proguard-rules.pro
+
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+
+
 GIT STUFF:
 
 if android studio loses git association:
