@@ -5,6 +5,9 @@ MVN:
     <localRepository>D:/gubo/dev/mvn/gubo.local.repo</localRepository>
 
 
+TO DEPLOY SLIPWIRE:
+mvn install:install-file -Dfile=build/outputs/aar/slipwire-debug.aar -DgroupId=gubo.slipwire -DartifactId=slipwire -Dversion=1.0.0 -Dpackaging=aar
+
 VOLLEY:
 1. clone from https://android.googlesource.com/platform/frameworks/volley/
 2. (from volley project) Build -> Make Project => build/outputs/aar/volley-debug.aar
