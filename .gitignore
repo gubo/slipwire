@@ -16,6 +16,12 @@ slipwire.iml
 mobile/
 tv/
 
+#
+# slipwire
+# http://stackoverflow.com/questions/5533050/gitignore-exclude-folder-but-include-specific-subfolder
+#
 slipwire/*
-!slipwire/src/main/java/**/*
-!slipwire/src/main/AndroidManifest.xml
+!slipwire/src
+
+
+
