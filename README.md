@@ -22,8 +22,9 @@ The core of Slipwire is in the gubo.slipwire package.
 *Coming Soon*
 
 ##### DEPENDENCIES <br>
-com.android.support:support-annotations:23.3.0
-io.reactivex:rxandroid:1.0.1
+com.android.support:support-annotations:23.3.0<br>
+io.reactivex:rxandroid:1.0.1<br>
+io.reactivex:rxjava:1.0.14<br>
 
 
 ##### LICENSE 
