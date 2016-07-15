@@ -1,11 +1,6 @@
 
-#
-# just the android studio src folder
-#
-
 *
+
+!slipwire
 !slipwire/src
 !slipwire/build.gradle
-
-
-
