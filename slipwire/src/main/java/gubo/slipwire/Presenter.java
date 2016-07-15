@@ -1,22 +1,18 @@
 
 package gubo.slipwire;
 
+import android.support.annotation.*;
+
 /**
  *
  */
-public interface Presenter
+public interface Presenter<D extends Display>
 {
     /**
      *
+     * @param d
      */
-    public static interface Display {}
-
-    /**
-     *
-     * @param display
-     * @param <D>
-     */
-    public <D extends Display> void bind( D display );
+    public void bind( @Nullable D d );
 
     /**
      *

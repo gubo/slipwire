@@ -1,27 +1,11 @@
 
-.gradle/
-.idea/
-
-build.gradle
-build/
-gradle/
-gradlew
-gradlew.bat
-gradle.properties
-settings.gradle
-local.properties
-notes.txt
-slipwire.iml
-
-mobile/
-tv/
-
 #
-# slipwire
-# http://stackoverflow.com/questions/5533050/gitignore-exclude-folder-but-include-specific-subfolder
+# just the android studio src folder
 #
-slipwire/*
+
+*
 !slipwire/src
+!slipwire/build.gradle
 
 
 

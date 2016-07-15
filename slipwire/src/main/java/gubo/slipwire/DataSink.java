@@ -4,7 +4,7 @@ package gubo.slipwire;
 /**
  *
  */
-public interface DataSink
+public interface DataSink<D extends Data>
 {
     /**
      *

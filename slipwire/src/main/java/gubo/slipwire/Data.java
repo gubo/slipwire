@@ -4,17 +4,6 @@ package gubo.slipwire;
 /**
  *
  */
-public abstract class Data implements Original
+public interface Data extends Original
 {
-    protected final Object origin;
-
-    /**
-     *
-     * @param origin
-     */
-    public Data( final Object origin ) {
-        this.origin = origin;
-    }
-
-    @Override public Object getOrigin() { return origin; }
 }
