@@ -1,7 +1,9 @@
 
 package gubo.slipwire;
 
-import rx.Subscriber;
+import android.support.v7.widget.*;
+
+import rx.*;
 
 /**
  * Created by JEFF on 7/17/2016.
