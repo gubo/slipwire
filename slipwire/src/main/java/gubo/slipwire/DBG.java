@@ -2,26 +2,23 @@
 package gubo.slipwire;
 
 /**
- *
+ * DBG<br>
+ * Thread-safe.
  */
 public class DBG
 {
-    /**
-     *
-     */
-    public static boolean verbose = false;
-
-    /**
-     *
-     */
-    public static boolean trace = false;
+    private static Log log = new SystemLog();
+    private static boolean verbose = false;
+    private static boolean trace = false;
+    private static String tag = "DBG";
 
     /**
      *
      * @return
      */
     public static Log getLog() {
-        return log;
+        final Log l = log;
+        return l;
     }
 
     /**
@@ -37,7 +34,8 @@ public class DBG
      * @return
      */
     public static String getTag() {
-        return tag;
+        final String t = tag;
+        return t;
     }
 
     /**
@@ -50,11 +48,47 @@ public class DBG
 
     /**
      *
+     * @return
+     */
+    public static boolean isVerbose() {
+        final boolean v = verbose;
+        return v;
+    }
+
+    /**
+     *
+     * @param verbose
+     */
+    public static void setVerbose( final boolean verbose ) {
+        DBG.verbose = verbose;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean isTrace() {
+        final boolean t = trace;
+        return t;
+    }
+
+    /**
+     *
+     * @param trace
+     */
+    public static void setTrace( final boolean trace ) {
+        DBG.trace = trace;
+    }
+
+    /**
+     *
      * @param o
      */
     public static void m( final Object o ) {
-        if ( log == null ) { return; }
-        log.d( tag,( o != null ? o.toString() : null ) );
+        final Log l = log;
+        if ( l != null ) {
+            l.d( tag,( o != null ? o.toString() : null ) );
+        }
     }
 
     /**
@@ -62,8 +96,10 @@ public class DBG
      * @param o
      */
     public static void w( final Object o ) {
-        if ( log == null ) { return; }
-        log.w( tag,( o != null ? o.toString() : null ) );
+        final Log l = log;
+        if ( l != null ) {
+            l.w( tag,( o != null ? o.toString() : null ) );
+        }
     }
 
     /**
@@ -71,9 +107,10 @@ public class DBG
      * @param o
      */
     public static void v( final Object o ) {
-        if ( log == null ) { return; }
-        if ( verbose ) {
-            log.v( tag,( o != null ? o.toString() : null ) );
+        final Log l = log;
+        final boolean v = verbose;
+        if ( v && (l != null) ) {
+            l.v( tag,( o != null ? o.toString() : null ) );
         }
     }
 
@@ -82,9 +119,10 @@ public class DBG
      * @param o
      */
     public static void t( final Object o ) {
-        if ( log == null ) { return; }
-        if ( trace ) {
-            log.v( tag,( o != null ? o.toString() : null ) );
+        final Log l = log;
+        final boolean t = trace;
+        if ( t && (l != null) ) {
+            l.v( tag,( o != null ? o.toString() : null ) );
         }
     }
 
@@ -93,35 +131,86 @@ public class DBG
      * @param x
      */
     public static void m( final Throwable x ) {
-        if ( log == null ) { return; }
-        log.e( tag,"XXX",x );
+        final Log l = log;
+        if ( l != null ) {
+            l.e( tag,"XXX",x );
+        }
     }
 
-    public static class Android implements Log
+    public static class SystemLog implements Log
     {
         @Override
         public void d( final String tag,final String msg ) {
-            android.util.Log.d( tag,msg );
+            System.out.println( tag + ThreadID.string() + msg );
         }
 
         @Override
         public void v( final String tag,final String msg ) {
-            android.util.Log.v( tag,msg );
+            System.out.println( tag + ThreadID.string() + msg );
         }
 
         @Override
         public void w( final String tag,final String msg ) {
-            android.util.Log.w( tag,msg );
+            System.err.println( tag + ThreadID.string() + msg );
         }
 
         @Override
         public void e( final String tag,final String msg,final Throwable x ) {
-            android.util.Log.d( tag,msg,x );
+            System.out.println( tag + ThreadID.string() + "XXX" );
+            if ( x != null ) { x.printStackTrace(); }
+        }
+
+    }
+
+    public static class AndroidLog implements Log
+    {
+        @Override
+        public void d( final String tag,final String msg ) {
+            android.util.Log.d( tag+ThreadID.string(),msg );
+        }
+
+        @Override
+        public void v( final String tag,final String msg ) {
+            android.util.Log.v( tag+ThreadID.string(),msg );
+        }
+
+        @Override
+        public void w( final String tag,final String msg ) {
+            android.util.Log.w( tag+ThreadID.string(),msg );
+        }
+
+        @Override
+        public void e( final String tag,final String msg,final Throwable x ) {
+            android.util.Log.d( tag+ThreadID.string(),msg,x );
         }
     }
 
-    private static Log log = new DBG.Android();
-    private static String tag = "DBG";
+    private static class ThreadID
+    {
+        private static final java.util.Map<Long,String> threadmap = new java.util.HashMap<>( 15 );
+
+        private static String string() {
+            final long threadId = Long.valueOf( Thread.currentThread().getId() );
+            String string = threadmap.get( threadId );
+            if ( string == null ) {
+                string = "[" + Thread.currentThread().getId() + "] ";
+                threadmap.put( threadId,string );
+            }
+            return string;
+        }
+
+        private ThreadID() {}
+    }
 
     private DBG() {}
+
+    public static void main( final String [] args ) {
+        DBG.setVerbose( true );
+        DBG.setTrace( false );
+        DBG.setTag( "MOCK-DBG" );
+        DBG.m( "message" );
+        DBG.v( "verbose " + DBG.isVerbose() );
+        DBG.t( "trace " + DBG.isTrace() );
+        DBG.m( new Exception( "bogus exception" ) );
+    }
 }

@@ -3,4 +3,7 @@
 
 !slipwire
 !slipwire/src
+!slipwire/src/**
+
+
 !slipwire/build.gradle
